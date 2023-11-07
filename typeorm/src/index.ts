@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { Env } from './core/env';
 import { startServer } from './server';
 import { connectDB } from './core/db/db';
+import { supplierRouter } from './app/routers/supplier.router';
 
 (async () => {
   await connectDB();
@@ -9,6 +10,6 @@ import { connectDB } from './core/db/db';
   await startServer({
     host: Env.SERVER_HOST,
     port: Env.SERVER_PORT,
-    routers: [],
+    routers: [supplierRouter],
   });
 })();
