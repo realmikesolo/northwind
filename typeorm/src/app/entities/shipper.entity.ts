@@ -6,10 +6,10 @@ export class Shipper {
   @PrimaryGeneratedColumn('increment')
   public id: number;
 
-  @Column({ type: 'varchar', length: 40 })
+  @Column({ type: 'text' })
   public companyName: string;
 
-  @Column({ type: 'varchar', length: 24 })
+  @Column({ type: 'text' })
   public phone: string;
 
   @OneToMany(() => Order, (order) => order.shipper)

@@ -6,34 +6,34 @@ export class Customer {
   @PrimaryColumn({ type: 'varchar', length: 5 })
   public id: string;
 
-  @Column({ type: 'varchar', length: 40 })
+  @Column({ type: 'text' })
   public companyName: string;
 
-  @Column({ type: 'varchar', length: 30 })
+  @Column({ type: 'text' })
   public contactName: string;
 
-  @Column({ type: 'varchar', length: 30 })
+  @Column({ type: 'text' })
   public contactTitle: string;
 
-  @Column({ type: 'varchar', length: 60, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public address: string;
 
-  @Column({ type: 'varchar', length: 15, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public city: string;
 
-  @Column({ type: 'varchar', length: 15, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public region: string;
 
-  @Column({ type: 'varchar', length: 10, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public postalCode: string;
 
-  @Column({ type: 'varchar', length: 15, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public country: string;
 
-  @Column({ type: 'varchar', length: 24, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public phone: string;
 
-  @Column({ type: 'varchar', length: 24, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public fax: string;
 
   @OneToMany(() => Order, (order) => order.customer)

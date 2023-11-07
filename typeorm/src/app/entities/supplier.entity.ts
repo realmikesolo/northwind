@@ -6,37 +6,37 @@ export class Supplier {
   @PrimaryGeneratedColumn('increment')
   public id: number;
 
-  @Column({ type: 'varchar', length: 40 })
+  @Column({ type: 'text' })
   public companyName: string;
 
-  @Column({ type: 'varchar', length: 30 })
+  @Column({ type: 'text' })
   public contactName: string;
 
-  @Column({ type: 'varchar', length: 30 })
+  @Column({ type: 'text' })
   public contactTitle: string;
 
-  @Column({ type: 'varchar', length: 60 })
+  @Column({ type: 'text' })
   public address: string;
 
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'text' })
   public city: string;
 
-  @Column({ type: 'varchar', length: 15, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public region: string;
 
-  @Column({ type: 'varchar', length: 10 })
+  @Column({ type: 'text' })
   public postalCode: string;
 
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'text' })
   public country: string;
 
-  @Column({ type: 'varchar', length: 24 })
+  @Column({ type: 'text' })
   public phone: string;
 
-  @Column({ type: 'varchar', length: 24, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public fax: string;
 
-  @Column('text', { nullable: true })
+  @Column({ type: 'text', nullable: true })
   public homePage: string;
 
   @OneToMany(() => Product, (product) => product.supplier)

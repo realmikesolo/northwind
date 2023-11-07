@@ -12,7 +12,7 @@ export class Order {
   @Column({ type: 'integer' })
   public employeeId: number;
 
-  @Column({ type: 'varchar', length: 5 })
+  @Column({ type: 'text' })
   public customerId: string;
 
   @Column({ type: 'date' })
@@ -30,22 +30,22 @@ export class Order {
   @Column({ type: 'decimal', precision: 10, scale: 4 })
   public freight: number;
 
-  @Column({ type: 'varchar', length: 40 })
+  @Column({ type: 'text' })
   public shipName: string;
 
-  @Column({ type: 'varchar', length: 60 })
+  @Column({ type: 'text' })
   public shipAddress: string;
 
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'text' })
   public shipCity: string;
 
-  @Column({ type: 'varchar', length: 15, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public shipRegion: string;
 
-  @Column({ type: 'varchar', length: 10, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public shipPostalCode: string;
 
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'text' })
   public shipCountry: string;
 
   @ManyToOne(() => Employee, (employee) => employee.orders)

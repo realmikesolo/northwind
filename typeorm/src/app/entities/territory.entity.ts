@@ -5,7 +5,7 @@ import { Region } from './region.entity';
 @Entity({ name: 'territories' })
 export class Territory {
   @PrimaryColumn({ type: 'varchar', length: 20 })
-  public id: number;
+  public id: string;
 
   @Column({ type: 'text' })
   public description: string;

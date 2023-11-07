@@ -7,7 +7,7 @@ export class EmployeeTerritory {
   @PrimaryColumn({ type: 'integer' })
   public employeeId: number;
 
-  @PrimaryColumn({ type: 'varchar', length: 20 })
+  @PrimaryColumn({ type: 'text' })
   public territoryId: string;
 
   @ManyToOne(() => Employee, (employee) => employee.employeeTerritories)

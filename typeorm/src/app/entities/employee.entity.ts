@@ -7,16 +7,16 @@ export class Employee {
   @PrimaryGeneratedColumn('increment')
   public id: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'text' })
   public firstName: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'text' })
   public lastName: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'text' })
   public title: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'text' })
   public titleOfCourtesy: string;
 
   @Column({ type: 'date' })
@@ -25,25 +25,25 @@ export class Employee {
   @Column({ type: 'date' })
   public hireDate: Date;
 
-  @Column({ type: 'varchar', length: 60 })
+  @Column({ type: 'text' })
   public address: string;
 
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'text' })
   public city: string;
 
-  @Column({ type: 'varchar', length: 15, nullable: true })
+  @Column({ type: 'text', nullable: true })
   public region: string;
 
-  @Column({ type: 'varchar', length: 10 })
+  @Column({ type: 'text' })
   public postalCode: string;
 
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'text' })
   public country: string;
 
-  @Column({ type: 'varchar', length: 24 })
+  @Column({ type: 'text' })
   public homePhone: string;
 
-  @Column({ type: 'varchar', length: 4 })
+  @Column({ type: 'text' })
   public extension: string;
 
   @Column({ type: 'text' })

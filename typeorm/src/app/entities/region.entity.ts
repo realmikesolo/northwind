@@ -6,7 +6,7 @@ export class Region {
   @PrimaryGeneratedColumn('increment')
   public id: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'text' })
   public description: string;
 
   @OneToMany(() => Territory, (territory) => territory.region)

@@ -8,7 +8,7 @@ export class Product {
   @PrimaryGeneratedColumn('increment')
   public id: number;
 
-  @Column({ type: 'varchar', length: 40 })
+  @Column({ type: 'text' })
   public name: string;
 
   @Column({ type: 'integer' })
@@ -17,7 +17,7 @@ export class Product {
   @Column({ type: 'integer' })
   public categoryId: number;
 
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'text' })
   public quantityPerUnit: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 4 })

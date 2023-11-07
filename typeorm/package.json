@@ -9,7 +9,6 @@
     "typeorm:cli": "typeorm-ts-node-commonjs -d ./src/core/db/typeorm.config.ts",
     "migration:generate": "npm run typeorm:cli -- migration:generate",
     "migration:run": "npm run typeorm:cli -- migration:run"
-
   },
   "dependencies": {
     "body-parser": "^1.20.2",
