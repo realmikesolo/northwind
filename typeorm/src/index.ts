@@ -4,6 +4,7 @@ import { startServer } from './server';
 import { connectDB } from './core/db/db';
 import { supplierRouter } from './app/routers/supplier.router';
 import { productRouter } from './app/routers/product.router';
+import { orderRouter } from './app/routers/order.router';
 
 (async () => {
   await connectDB();
@@ -11,6 +12,6 @@ import { productRouter } from './app/routers/product.router';
   await startServer({
     host: Env.SERVER_HOST,
     port: Env.SERVER_PORT,
-    routers: [supplierRouter, productRouter],
+    routers: [supplierRouter, productRouter, orderRouter],
   });
 })();
