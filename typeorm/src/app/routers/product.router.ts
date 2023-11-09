@@ -4,7 +4,7 @@ import { dataSource } from '../../core/db/db';
 import { Product } from '../entities/product.entity';
 import { ProductService } from '../services/product.service';
 import { z } from 'zod';
-import { LimitSchema, PageSchema } from '../../core/schemas';
+import { LimitSchema, PageSchema, SearchSchema } from '../../core/schemas';
 import { HttpStatus } from '../../core/http-status';
 import { ProductSchema } from '../schemas/product.schema';
 
@@ -42,6 +42,7 @@ const ProductListRequestSchema = z
       .object({
         limit: LimitSchema,
         page: PageSchema,
+        search: SearchSchema.optional(),
       })
       .strict(),
   })

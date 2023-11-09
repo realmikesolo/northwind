@@ -7,8 +7,12 @@ import { z } from 'zod';
 import { LimitSchema, PageSchema } from '../../core/schemas';
 import { HttpStatus } from '../../core/http-status';
 import { OrderSchema } from '../schemas/order.schema';
+import { OrderDetail } from '../entities/order-detail.entity';
 
-const productService = new OrderService(new Repository(Order, dataSource.manager));
+const productService = new OrderService(
+  new Repository(Order, dataSource.manager),
+  new Repository(OrderDetail, dataSource.manager),
+);
 
 export async function orderRouter(router: Router): Promise<void> {
   router.get('/orders', async (req, res, next) => {

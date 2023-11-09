@@ -18,3 +18,5 @@ export const PageSchema = z
   .refine((val) => !Number.isNaN(val) && val >= 0, {
     message: 'Offset must be a non-negative number',
   });
+
+export const SearchSchema = z.string();

@@ -1,10 +1,105 @@
 import { Repository } from 'typeorm';
+import { OrderDetail } from '../entities/order-detail.entity';
 import { Order } from '../entities/order.entity';
 import { OrderGetRequestDto, OrderListRequestDto } from '../routers/order.router';
 import { NotFoundException } from '../../core/http-exception';
 
 export class OrderService {
-  constructor(private readonly orderRepository: Repository<Order>) {}
+  constructor(
+    private readonly orderRepository: Repository<Order>,
+    private readonly orderDetailsRepository: Repository<OrderDetail>,
+  ) {}
+
+  public async get(ctx: OrderGetRequestDto): Promise<{
+    order: Omit<
+      Order,
+      'employeeId' | 'shipAddress' | 'employee' | 'customer' | 'orderDetails' | 'shipper' | 'via'
+    > & {
+      totalPrice: number;
+      totalQuantity: number;
+      totalProducts: number;
+      totalDiscount: number;
+      shipVia: string;
+    };
+    products: Array<
+      Pick<OrderDetail, 'discount' | 'quantity' | 'unitPrice'> & {
+        totalPrice: number;
+        name: string;
+      }
+    >;
+  }> {
+    const { params } = ctx;
+
+    const orderQueryBuilder = this.orderRepository.createQueryBuilder('order');
+
+    const order = await orderQueryBuilder
+      .select([
+        'order.id as id',
+        'order.customerId as "customerId"',
+        'order.shipName as "shipName"',
+        'order.shipCity as "shipCity"',
+        'order.freight as freight',
+        'order.shipCountry as "shipCountry"',
+        'order.orderDate as "orderDate"',
+        'order.requiredDate as "requiredDate"',
+        'order.shippedDate as "shippedDate"',
+        'order.shipRegion as shipRegion',
+        'order.shipPostalCode as "shipPostalCode"',
+        'SUM(detail.unitPrice * detail.quantity)::float as "totalPrice"',
+        'SUM(detail.quantity)::int as "totalQuantity"',
+        'SUM(detail.quantity * detail.unitPrice * detail.discount)::float as "totalDiscount"',
+        'COUNT(detail.orderId)::int as "totalProducts"',
+        'shipper.companyName as "shipVia"',
+      ])
+      .where('order.id = :id', { id: params.id })
+      .leftJoin('order.orderDetails', 'detail')
+      .leftJoin('order.shipper', 'shipper')
+      .groupBy('order.id')
+      .addGroupBy('shipper.companyName')
+      .getRawOne<
+        Omit<
+          Order,
+          'employeeId' | 'shipAddress' | 'employee' | 'customer' | 'orderDetails' | 'shipper' | 'via'
+        > & {
+          totalPrice: number;
+          totalQuantity: number;
+          totalProducts: number;
+          totalDiscount: number;
+          shipVia: string;
+        }
+      >();
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    const orderDetailsQueryBuilder = this.orderDetailsRepository.createQueryBuilder('detail');
+
+    const products = await orderDetailsQueryBuilder
+      .select([
+        'CAST(detail.unitPrice as float)',
+        'detail.quantity as quantity',
+        'SUM(detail.unitPrice * detail.quantity)::float as "totalPrice"',
+        'detail.discount as discount',
+        'product.name as name',
+      ])
+      .where('detail.orderId = :id', { id: params.id })
+      .leftJoin('detail.product', 'product')
+      .groupBy('detail.unitPrice')
+      .addGroupBy('detail.quantity')
+      .addGroupBy('detail.discount')
+      .addGroupBy('product.name')
+      .getRawMany<
+        Pick<OrderDetail, 'discount' | 'quantity' | 'unitPrice'> & {
+          totalPrice: number;
+          name: string;
+        }
+      >();
+
+    return {
+      order,
+      products,
+    };
+  }
 
   public async list(ctx: OrderListRequestDto): Promise<
     Array<
@@ -43,70 +138,5 @@ export class OrderService {
       >();
 
     return orders;
-  }
-
-  public async get(ctx: OrderGetRequestDto): Promise<
-    Omit<
-      Order,
-      'shipVia' | 'shipAddress' | 'employeeId' | 'orderDetails' | 'employee' | 'shipper' | 'customer'
-    > & {
-      shipVia: string;
-      products: Array<{
-        name: string;
-        quantity: number;
-        unitPrice: number;
-        discount: number;
-      }>;
-      totalProducts: number;
-      totalQuantity: number;
-      totalPrice: number;
-      totalDiscount: number;
-    }
-  > {
-    const { params } = ctx;
-
-    const order = await this.orderRepository.findOne({
-      where: { id: params.id },
-      relations: ['orderDetails.product', 'shipper'],
-    });
-    if (!order) {
-      throw new NotFoundException('Order not found');
-    }
-
-    return {
-      id: order.id,
-      customerId: order.customerId,
-      shipName: order.shipName,
-      shipCity: order.shipCity,
-      shipCountry: order.shipCountry,
-      shipRegion: order.shipRegion,
-      shipPostalCode: order.shipPostalCode,
-      orderDate: order.orderDate,
-      requiredDate: order.requiredDate,
-      shippedDate: order.shippedDate,
-      freight: order.freight,
-      shipVia: order.shipper.companyName,
-      products: order.orderDetails.map((detail) => ({
-        name: detail.product.name,
-        quantity: detail.quantity,
-        unitPrice: detail.unitPrice,
-        discount: detail.discount,
-      })),
-      ...order.orderDetails.reduce(
-        (acc, val) => {
-          acc.totalPrice += val.unitPrice * val.quantity;
-          acc.totalQuantity += val.quantity;
-          acc.totalProducts += 1;
-          acc.totalDiscount += val.unitPrice * val.quantity * val.discount;
-          return acc;
-        },
-        {
-          totalProducts: 0,
-          totalQuantity: 0,
-          totalPrice: 0,
-          totalDiscount: 0,
-        },
-      ),
-    };
   }
 }
