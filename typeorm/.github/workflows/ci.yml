@@ -4,15 +4,16 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - '.github/**'
-      - '*.md'
-      - 'src/core/db/migrations/**'
+      - ".github/**"
+      - "*.md"
+      - "src/core/db/migrations/**"
 
   pull_request:
     branches: [main]
     paths-ignore:
-      - '.github/**'
-      - '*.md'
+      - ".github/**"
+      - "*.md"
+      - "src/core/db/migrations/**"
 
 jobs:
   ci:
