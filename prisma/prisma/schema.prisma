@@ -1,0 +1,174 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id              Int           @id @default(autoincrement())
+  name            String
+  supplierId      Int
+  categoryId      Int
+  quantityPerUnit String
+  unitPrice       Decimal       @db.Decimal(10, 4)
+  unitsInStock    Int
+  unitsOnOrder    Int
+  reorderLevel    Int
+  discontinued    Boolean
+  category        Category?     @relation(fields: [categoryId], references: [id])
+  supplier        Supplier?     @relation(fields: [supplierId], references: [id])
+  orderDetails    OrderDetail[]
+
+  @@map("products")
+}
+
+model Supplier {
+  id           Int       @id @default(autoincrement())
+  companyName  String
+  contactName  String
+  contactTitle String
+  address      String
+  city         String
+  region       String?
+  postalCode   String
+  country      String
+  phone        String
+  fax          String?
+  homePage     String?
+  products     Product[]
+
+  @@map("suppliers")
+}
+
+model OrderDetail {
+  orderId   Int
+  productId Int
+  unitPrice Decimal @db.Decimal(10, 4)
+  quantity  Int
+  discount  Float   @db.Real
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@id([orderId, productId])
+  @@map("order_details")
+}
+
+model Order {
+  id             Int       @id @default(autoincrement())
+  employeeId     Int
+  customerId     String
+  orderDate      DateTime  @db.Date
+  requiredDate   DateTime  @db.Date
+  shippedDate    DateTime? @db.Date
+  shipVia        Int
+  freight        Decimal   @db.Decimal(10, 4)
+  shipName       String
+  shipAddress    String
+  shipCity       String
+  shipRegion     String?
+  shipPostalCode String?
+  shipCountry    String
+
+  employee     Employee      @relation(fields: [employeeId], references: [id])
+  customer     Customer      @relation(fields: [customerId], references: [id])
+  orderDetails OrderDetail[]
+  shipper      Shipper       @relation(fields: [shipVia], references: [id])
+
+  @@map("orders")
+}
+
+model Shipper {
+  id          Int     @id @default(autoincrement())
+  companyName String
+  phone       String
+  orders      Order[]
+
+  @@map("shippers")
+}
+
+model Customer {
+  id           String  @id @db.VarChar(5)
+  companyName  String
+  contactName  String
+  contactTitle String
+  address      String?
+  city         String?
+  region       String?
+  postalCode   String?
+  country      String?
+  phone        String?
+  fax          String?
+  orders       Order[]
+
+  @@map("customers")
+}
+
+model Employee {
+  id                  Int                 @id @default(autoincrement())
+  firstName           String
+  lastName            String
+  title               String
+  titleOfCourtesy     String
+  birthDate           DateTime            @db.Date
+  hireDate            DateTime            @db.Date
+  address             String
+  city                String
+  region              String?
+  postalCode          String
+  country             String
+  homePhone           String
+  extension           String
+  notes               String
+  reportsTo           Int?
+  employeeTerritories EmployeeTerritory[]
+  manager             Employee?           @relation("ManagerSubordinates", fields: [reportsTo], references: [id])
+  subordinates        Employee[]          @relation("ManagerSubordinates")
+  orders              Order[]
+
+  @@map("employees")
+}
+
+model EmployeeTerritory {
+  employeeId  Int
+  territoryId String
+
+  employee  Employee  @relation(fields: [employeeId], references: [id])
+  territory Territory @relation(fields: [territoryId], references: [id])
+
+  @@id([employeeId, territoryId])
+  @@map("employee_territories")
+}
+
+model Territory {
+  id                  String              @id @db.VarChar(20)
+  description         String
+  regionId            Int
+  employeeTerritories EmployeeTerritory[]
+  region              Region              @relation(fields: [regionId], references: [id])
+
+  @@map("territories")
+}
+
+model Region {
+  id          Int         @id @default(autoincrement())
+  description String
+  territories Territory[]
+
+  @@map("regions")
+}
