@@ -3,7 +3,14 @@ import { NotFoundException } from '../../core/http-exception';
 import { OrderGetRequestDto, OrderListRequestDto } from '../routers/order.router';
 
 export class OrderService {
-  constructor(private readonly prisma: PrismaClient) {}
+  private static _instance: OrderService;
+  constructor(private readonly prisma: PrismaClient) {
+    if (OrderService._instance) {
+      return OrderService._instance;
+    }
+
+    OrderService._instance = this;
+  }
 
   public async get(ctx: OrderGetRequestDto): Promise<{
     order: Order & {

@@ -3,7 +3,14 @@ import { NotFoundException } from '../../core/http-exception';
 import { PrismaClient, Supplier } from '@prisma/client';
 
 export class SupplierService {
-  constructor(private readonly prisma: PrismaClient) {}
+  private static _instance: SupplierService;
+  constructor(private readonly prisma: PrismaClient) {
+    if (SupplierService._instance) {
+      return SupplierService._instance;
+    }
+
+    SupplierService._instance = this;
+  }
 
   public async get(ctx: SupplierGetRequestDto): Promise<{ supplier: Supplier }> {
     const { params } = ctx;

@@ -3,7 +3,14 @@ import { NotFoundException } from '../../core/http-exception';
 import { Prisma, PrismaClient, Product } from '@prisma/client';
 
 export class ProductService {
-  constructor(private readonly prisma: PrismaClient) {}
+  private static _instance: ProductService;
+  constructor(private readonly prisma: PrismaClient) {
+    if (ProductService._instance) {
+      return ProductService._instance;
+    }
+
+    ProductService._instance = this;
+  }
 
   public async get(ctx: ProductGetRequestDto): Promise<{
     product: Product;

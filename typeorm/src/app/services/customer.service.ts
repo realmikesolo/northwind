@@ -4,7 +4,14 @@ import { Customer } from '../entities/customer.entity';
 import { CustomerGetRequestDto, CustomerListRequestDto } from '../routers/customer.router';
 
 export class CustomerService {
-  constructor(private readonly customerService: Repository<Customer>) {}
+  private static _instance: CustomerService;
+  constructor(private readonly customerService: Repository<Customer>) {
+    if (CustomerService._instance) {
+      return CustomerService._instance;
+    }
+
+    CustomerService._instance = this;
+  }
 
   public async get(ctx: CustomerGetRequestDto): Promise<{
     customer: Omit<Customer, 'orders'>;

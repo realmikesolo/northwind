@@ -4,7 +4,14 @@ import { ProductGetRequestDto, ProductListRequestDto } from '../routers/product.
 import { NotFoundException } from '../../core/http-exception';
 
 export class ProductService {
-  constructor(private readonly productRepository: Repository<Product>) {}
+  private static _instance: ProductService;
+  constructor(private readonly productRepository: Repository<Product>) {
+    if (ProductService._instance) {
+      return ProductService._instance;
+    }
+
+    ProductService._instance = this;
+  }
 
   public async get(ctx: ProductGetRequestDto): Promise<{
     product: Product;

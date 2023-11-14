@@ -4,7 +4,14 @@ import { EmployeeGetRequestDto, EmployeeListRequestDto } from '../routers/employ
 import { NotFoundException } from '../../core/http-exception';
 
 export class EmployeeService {
-  constructor(private readonly employeeRepository: Repository<Employee>) {}
+  private static _instance: EmployeeService;
+  constructor(private readonly employeeRepository: Repository<Employee>) {
+    if (EmployeeService._instance) {
+      return EmployeeService._instance;
+    }
+
+    EmployeeService._instance = this;
+  }
 
   public async get(ctx: EmployeeGetRequestDto): Promise<{
     employee: Omit<Employee, 'manager' | 'reportsTo' | 'employeeTerritories' | 'orders' | 'subordinates'> & {

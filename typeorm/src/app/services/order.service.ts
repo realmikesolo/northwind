@@ -5,10 +5,17 @@ import { OrderGetRequestDto, OrderListRequestDto } from '../routers/order.router
 import { NotFoundException } from '../../core/http-exception';
 
 export class OrderService {
+  private static _instance: OrderService;
   constructor(
     private readonly orderRepository: Repository<Order>,
     private readonly orderDetailsRepository: Repository<OrderDetail>,
-  ) {}
+  ) {
+    if (OrderService._instance) {
+      return OrderService._instance;
+    }
+
+    OrderService._instance = this;
+  }
 
   public async get(ctx: OrderGetRequestDto): Promise<{
     order: Omit<

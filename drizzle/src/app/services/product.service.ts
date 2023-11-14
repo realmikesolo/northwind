@@ -5,7 +5,14 @@ import { Product, Supplier, products, suppliers } from '../entities';
 import { NotFoundException } from '../../core/http-exception';
 
 export class ProductService {
-  constructor(private readonly drizzle: Drizzle) {}
+  private static _instance: ProductService;
+  constructor(private readonly drizzle: Drizzle) {
+    if (ProductService._instance) {
+      return ProductService._instance;
+    }
+
+    ProductService._instance = this;
+  }
 
   public async get(ctx: ProductGetRequestDto): Promise<{
     product: Product;

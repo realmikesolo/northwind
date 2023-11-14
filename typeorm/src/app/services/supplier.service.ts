@@ -4,7 +4,14 @@ import { SupplierGetRequestDto, SupplierListRequestDto } from '../routers/suppli
 import { NotFoundException } from '../../core/http-exception';
 
 export class SupplierService {
-  constructor(private readonly supplierRepository: Repository<Supplier>) {}
+  private static _instance: SupplierService;
+  constructor(private readonly supplierRepository: Repository<Supplier>) {
+    if (SupplierService._instance) {
+      return SupplierService._instance;
+    }
+
+    SupplierService._instance = this;
+  }
 
   public async get(ctx: SupplierGetRequestDto): Promise<{
     supplier: Supplier;

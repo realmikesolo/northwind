@@ -5,10 +5,17 @@ import { Order } from '../entities/order.entity';
 import { OrderGetRequestDto, OrderListRequestDto } from '../routers/order.router';
 
 export class OrderService {
+  private static _instance: OrderService;
   constructor(
     private readonly orderRepository: EntityRepository<Order>,
     private readonly orderDetailsRepository: EntityRepository<OrderDetail>,
-  ) {}
+  ) {
+    if (OrderService._instance) {
+      return OrderService._instance;
+    }
+
+    OrderService._instance = this;
+  }
 
   public async get(ctx: OrderGetRequestDto): Promise<{
     order: Order;

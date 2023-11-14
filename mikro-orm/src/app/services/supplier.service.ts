@@ -4,7 +4,14 @@ import { NotFoundException } from '../../core/http-exception';
 import { EntityRepository } from '@mikro-orm/postgresql';
 
 export class SupplierService {
-  constructor(private readonly supplierRepository: EntityRepository<Supplier>) {}
+  private static _instance: SupplierService;
+  constructor(private readonly supplierRepository: EntityRepository<Supplier>) {
+    if (SupplierService._instance) {
+      return SupplierService._instance;
+    }
+
+    SupplierService._instance = this;
+  }
 
   public async get(ctx: SupplierGetRequestDto): Promise<{
     supplier: Supplier;

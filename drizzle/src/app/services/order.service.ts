@@ -8,7 +8,14 @@ import { NotFoundException } from '../../core/http-exception';
 import { products } from '../entities';
 
 export class OrderService {
-  constructor(private readonly drizzle: Drizzle) {}
+  private static _instance: OrderService;
+  constructor(private readonly drizzle: Drizzle) {
+    if (OrderService._instance) {
+      return OrderService._instance;
+    }
+
+    OrderService._instance = this;
+  }
 
   public async get(ctx: OrderGetRequestDto): Promise<{
     order: Omit<Order, 'employeeId' | 'shipAddress' | 'orderDate' | 'requiredDate' | 'shipVia'> & {
